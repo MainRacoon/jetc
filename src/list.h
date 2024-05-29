@@ -3,49 +3,50 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define JETLIST_VPS_USE
+#ifdef JETLIST_VPS_USE
+typedef struct{
+    void*value;
+    size_t size;
+}jetelement;
+jetelement jetElement(void* value,size_t size){
+    return (jetelement){value,size};
+}
+#else
+typedef jetelement jetelement;
+#endif
 
-typedef size_t jetsize;
-
-typedef struct jetlist{
-    void** pointer;
-    jetsize len;
+typedef struct{
+    jetelement *pointer;
+    size_t len;
 }jetlist;
-#define jetVpointerCopy(of,name,type) \
-    type *name = (type*)malloc(sizeof(type));\
-    *p_copy=of;
-jetlist jetList(){
-    return (jetlist){(void**){},0};
-}
-jetlist jetListArray(void* array[],jetsize count){
-    jetlist list = jetList();
-    list.len=count;
-    list.pointer=(void**) malloc(sizeof(void*)*count);
-    for (jetsize i = 0; i < count; ++i) {
-        list.pointer[i]=(void*)array[i];
-    }
-    return list;
-}
+#define jetListVoidPointer(type,value) &(type[]){value}
+#define jetListVoidPValue(type,value) ((type*)value)[0]
 
-void jetListAppend(jetlist *list,void* element){
-    void** buf=list->pointer;
+jetlist jetList(){
+    return (jetlist){(jetelement*){},0};
+}
+void jetListAppend(jetlist *list,jetelement element){
+    jetelement* buf=list->pointer;
     list->len++;
-    list->pointer=(void**)malloc(list->len*sizeof(void*));
-    for (jetsize i = 0; i < list->len-1; ++i) {
+    list->pointer=(jetelement*)malloc(list->len*sizeof(jetelement));
+    for (size_t i = 0; i < list->len-1; ++i) {
         list->pointer[i]=buf[i];
     }
     list->pointer[list->len-1]=element;
 }
-void jetListAdd(jetlist *list,void* element,jetsize index){
+
+void jetListAdd(jetlist *list,jetelement element,size_t index){
     if(index>=list->len){
         printf("<Index> >= <List.Len> %d >= %d\n", (int)(intptr_t)index, (int)(intptr_t)list->len);
         printf("<Error::Index out of bounds>");
         exit(1);
     }
-    void** buf=list->pointer;
+    jetelement* buf=list->pointer;
     list->len++;
-    list->pointer=(void**)malloc(list->len*sizeof(void*));
-    jetsize offset =0;
-    for (jetsize i = 0; i < list->len-1; ++i) {
+    list->pointer=(jetelement*)malloc(list->len*sizeof(jetelement));
+    size_t offset =0;
+    for (size_t i = 0; i < list->len-1; ++i) {
         if(i==index){
             list->pointer[i]=element;
             offset++;
@@ -56,48 +57,48 @@ void jetListAdd(jetlist *list,void* element,jetsize index){
 jetlist jetListMerge(jetlist list1, jetlist list2){
     jetlist list = jetList();
     list.len=list1.len+list2.len;
-    list.pointer=(void**) malloc(sizeof(void*)*list.len);
-    for (jetsize i = 0; i < list1.len; ++i) {
+    list.pointer=(jetelement*) malloc(sizeof(jetelement)*list.len);
+    for (size_t i = 0; i < list1.len; ++i) {
         list.pointer[i]=list1.pointer[i];
     }
-    for (jetsize i = 0; i < list1.len; ++i) {
+    for (size_t i = 0; i < list1.len; ++i) {
         list.pointer[list1.len+i]=list2.pointer[i];
     }
     return list;
 }
-void jetListRemove(jetlist *list,jetsize index){
+void jetListRemove(jetlist *list,size_t index){
     if(index>=list->len){
         printf("<Index> >= <List.Len> %d >= %d\n", (int)(intptr_t)index, (int)(intptr_t)list->len);
         printf("<Error::Index out of bounds>");
         exit(1);
     }
-    void** buf = list->pointer;
+    jetelement* buf = list->pointer;
     list->len--;
-    list->pointer=(void**) malloc(list->len*sizeof(void*));
-    for (jetsize i = 0; i < index; ++i) {
+    list->pointer=(jetelement*) malloc(list->len*sizeof(jetelement));
+    for (size_t i = 0; i < index; ++i) {
         list->pointer[i]=buf[i];
     }
-    for (jetsize i = index; i < list->len ; ++i) {
+    for (size_t i = index; i < list->len ; ++i) {
         list->pointer[i]=buf[i+1];
     }
 }
-jetlist jetListWithout(jetlist list, jetsize index){
+jetlist jetListWithout(jetlist list, size_t index){
     jetlist buf = list;
     jetListRemove(&buf,index);
     return buf;
 }
-jetlist jetListSlice(jetlist list, jetsize index1, jetsize index2){
+jetlist jetListSlice(jetlist list, size_t index1, size_t index2){
     if(index2<index1||index2>=list.len){
         printf("<Index2> < <Index1> %d < %d \n<Index2> >= <List.Len> %d >= %d", (int)(intptr_t)index2,(int)(intptr_t)index1,(int)(intptr_t)index2,(int)(intptr_t)list.len);
         printf("<Error::Index out of bounds>");
         exit(1);
     }
-    void** buf = list.pointer;
+    jetelement* buf = list.pointer;
     jetlist listbuf = list;
     listbuf.len-=index2-index1+1;
-    list.pointer=(void**) malloc((list.len*sizeof(void*)));
-    jetsize offset = 0;
-    for (jetsize i = 0; i < listbuf.len; ++i) {
+    list.pointer=(jetelement*) malloc((list.len*sizeof(jetelement)));
+    size_t offset = 0;
+    for (size_t i = 0; i < listbuf.len; ++i) {
         if(i==index1){
             offset=index2-index1+1;
         }
