@@ -20,11 +20,20 @@ typedef struct{
     jetelement *pointer;
     size_t len;
 }jetlist;
-#define jetListVoidPointer(type,value) &(type[]){value}
-#define jetListVoidPValue(type,value) ((type*)value)[0]
+#define jetListVoidPointerOf(type,value,name) type*name = (type*)malloc(sizeof(type));*name = value;
+#define jetListVoidPointerValue(type,value) ((type*)value)[0]
 
 jetlist jetList(){
     return (jetlist){(jetelement*){},0};
+}
+jetlist jetListArray(jetelement*elements, size_t len){
+    jetlist list = jetList();
+    list.len = len;
+    list.pointer = (jetelement*) malloc(len*sizeof(jetelement));
+    for (size_t i = 0; i < len; ++i) {
+        list.pointer[i]=elements[i];
+    }
+    return list;
 }
 void jetListAppend(jetlist *list,jetelement element){
     jetelement* buf=list->pointer;
