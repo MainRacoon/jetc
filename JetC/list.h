@@ -20,8 +20,8 @@ typedef struct{
     jetelement *pointer;
     size_t len;
 }jetlist;
-#define jetListVoidPointerOf(type,value,name) type*name = (type*)malloc(sizeof(type));*name = value;
-#define jetListVoidPointerValue(type,value) ((type*)value)[0]
+#define jetListVP(type,value,name) type*name = (type*)malloc(sizeof(type));*name = value;
+#define jetListVPV(type,_value) (*((type*)_value.value))
 
 jetlist jetList(){
     return (jetlist){(jetelement*){},0};

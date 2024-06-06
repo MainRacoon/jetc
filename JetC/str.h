@@ -51,6 +51,14 @@ char* jetStrCat(char* str1, char* str2) {
     }
     return result;
 }
+bool jetStrCharIs(char*pat, char c){
+    for (size_t i = 0; i < strlen(pat); ++i) {
+        if(pat[i]==c){
+            return true;
+        }
+    }
+    return false;
+}
 char* jetStrEnd(char* str, char ch) {
     size_t len = strlen(str);
     char *new_str = (char*)malloc(len + 2);
