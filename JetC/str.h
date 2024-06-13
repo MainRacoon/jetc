@@ -22,7 +22,7 @@ char* jetStrf(const char* format, ...) {
     va_end(args_copy);
     return buffer;
 }
-char* jetStrStart(const char* str, char ch) {
+char* jetStrStart(char* str, char ch) {
     size_t len = strlen(str);
     char *new_str = (char*)malloc(len + 2);
     if (!new_str) {
@@ -75,18 +75,12 @@ char* jetStrSub(char *str, size_t startIndex, size_t endIndex) {
     if (endIndex >= len || startIndex > endIndex) {
         return NULL;
     }
-    size_t newLen = len - (endIndex - startIndex + 1);
-    char *newStr = (char *)malloc((newLen + 1) * sizeof(char));
-    if (newStr == NULL) {
-        return NULL;
+    char *newStr = (char *)malloc((endIndex-startIndex + 1) * sizeof(char));
+    size_t j = 0;
+    for (size_t i =startIndex;i<=endIndex;i++){
+        newStr[j++]=str[i];
     }
-    for (size_t i = 0; i < startIndex; i++) {
-        newStr[i] = str[i];
-    }
-    for (size_t i = endIndex + 1; i < len; i++) {
-        newStr[i - (endIndex - startIndex + 1)] = str[i];
-    }
-    newStr[newLen] = '\0';
+    newStr[endIndex-startIndex] = '\0';
     return newStr;
 }
 #endif

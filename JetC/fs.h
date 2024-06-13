@@ -11,7 +11,6 @@ bool jetFileExists(char*filename){
     FILE *f;
     fopen_s(&f,filename,"r");
     bool out = f!=NULL;
-    fclose(f);
     return out;
 }
 char*jetFileReadAll(char*filename,size_t *size){

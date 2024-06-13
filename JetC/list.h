@@ -24,7 +24,7 @@ typedef struct{
 #define jetListVPV(type,_value) (*((type*)_value.value))
 
 jetlist jetList(){
-    return (jetlist){(jetelement*){},0};
+    return (jetlist){0,0};
 }
 jetlist jetListArray(jetelement*elements, size_t len){
     jetlist list = jetList();
@@ -47,7 +47,7 @@ void jetListAppend(jetlist *list,jetelement element){
 
 void jetListAdd(jetlist *list,jetelement element,size_t index){
     if(index>=list->len){
-        printf("<Index> >= <List.Len> %d >= %d\n", (int)(intptr_t)index, (int)(intptr_t)list->len);
+        printf("<Index> >= <List.Len> %d >= %d\n", (int)(__int64)index, (int)(__int64)list->len);
         printf("<Error::Index out of bounds>");
         exit(1);
     }
@@ -77,7 +77,7 @@ jetlist jetListMerge(jetlist list1, jetlist list2){
 }
 void jetListRemove(jetlist *list,size_t index){
     if(index>=list->len){
-        printf("<Index> >= <List.Len> %d >= %d\n", (int)(intptr_t)index, (int)(intptr_t)list->len);
+        printf("<Index> >= <List.Len> %d >= %d\n", (int)(__int64)index, (int)(__int64)list->len);
         printf("<Error::Index out of bounds>");
         exit(1);
     }
@@ -98,7 +98,7 @@ jetlist jetListWithout(jetlist list, size_t index){
 }
 jetlist jetListSlice(jetlist list, size_t index1, size_t index2){
     if(index2<index1||index2>=list.len){
-        printf("<Index2> < <Index1> %d < %d \n<Index2> >= <List.Len> %d >= %d", (int)(intptr_t)index2,(int)(intptr_t)index1,(int)(intptr_t)index2,(int)(intptr_t)list.len);
+        printf("<Index2> < <Index1> %d < %d \n<Index2> >= <List.Len> %d >= %d", (int)(__int64)index2,(int)(__int64)index1,(int)(__int64)index2,(int)(__int64)list.len);
         printf("<Error::Index out of bounds>");
         exit(1);
     }
