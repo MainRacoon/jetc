@@ -8,14 +8,12 @@
 
 
 bool jetFileExists(char*filename){
-    FILE *f;
-    fopen_s(&f,filename,"r");
+    FILE *f=fopen(filename,"r");
     bool out = f!=NULL;
     return out;
 }
 char*jetFileReadAll(char*filename,size_t *size){
-    FILE*f;
-    fopen_s(&f,filename,"rb");
+    FILE*f=fopen(filename,"rb");
     if(f==NULL){
         return NULL;
     }
@@ -23,7 +21,7 @@ char*jetFileReadAll(char*filename,size_t *size){
     *size = ftell(f);
     fseek(f, 0, SEEK_SET);
     char*buf = (char*) malloc(*size*sizeof(char));
-    fread_s(buf, *size, 1,*size, f);
+    fread(buf, 1,*size, f);
     fclose(f);
     return buf;
 }

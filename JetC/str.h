@@ -1,6 +1,7 @@
 #ifndef JETC_STR_H
 #define JETC_STR_H
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -22,34 +23,32 @@ char* jetStrf(const char* format, ...) {
     va_end(args_copy);
     return buffer;
 }
-char* jetStrStart(char* str, char ch) {
-    size_t len = strlen(str);
-    char *new_str = (char*)malloc(len + 2);
-    if (!new_str) {
+char* jetStrStart(char* str,size_t len, char ch) {
+    if(str==NULL){
         return NULL;
     }
-    new_str[0] = ch;
-    strcpy_s(new_str + 1, len + 1, str);
-    return new_str;
+    char*buf = (char*)malloc((len+2)*sizeof(char));
+    buf[0]=ch;
+    for (size_t i = 0; i < len; ++i) {
+        buf[i+1]=str[i];
+    }
+    buf[len+1]=0;
+    return buf;
 }
-char* jetStrCat(char* str1, char* str2) {
-    size_t len1 = strlen(str1);
-    size_t len2 = strlen(str2);
-    size_t totalLen = len1 + len2;
-    char* result = (char*)malloc((totalLen + 1) * sizeof(char));
-    if (result == NULL) {
+char* jetStrCat(char* str1,size_t len1, char* str2,size_t len2) {
+    if (str1 == NULL||str2==NULL) {
         return NULL;
     }
-    result[0] = '\0';
-    if (strcpy_s(result, totalLen + 1, str1) != 0) {
-        free(result);
-        return NULL;
+    char* buf = (char*)malloc((len1+len2 + 1) * sizeof(char));
+    buf[len1+len2] = '\0';
+    size_t j = 0;
+    for (size_t i = 0; i < len1; ++i) {
+        buf[j++]=str1[i];
     }
-    if (strcat_s(result, totalLen + 1, str2) != 0) {
-        free(result);
-        return NULL;
+    for (size_t i = 0; i < len2; ++i) {
+        buf[j++]=str2[i];
     }
-    return result;
+    return buf;
 }
 bool jetStrCharIs(char*pat, char c){
     for (size_t i = 0; i < strlen(pat); ++i) {
@@ -59,28 +58,29 @@ bool jetStrCharIs(char*pat, char c){
     }
     return false;
 }
-char* jetStrEnd(char* str, char ch) {
-    size_t len = strlen(str);
-    char *new_str = (char*)malloc(len + 2);
-    if (!new_str) {
+char* jetStrEnd(char* str,size_t len, char ch) {
+    if(str==NULL){
         return NULL;
     }
-    strcpy_s(new_str, len + 1, str);
-    new_str[len] = ch;
-    new_str[len + 1] = '\0';
-    return new_str;
+    char*buf = (char*)malloc((len+2)*sizeof(char));
+    for (size_t i = 0; i < len; ++i) {
+        buf[i]=str[i];
+    }
+    buf[len]=ch;
+    buf[len+1]=0;
+    return buf;
 }
-char* jetStrSub(char *str, size_t startIndex, size_t endIndex) {
-    size_t len = strlen(str);
-    if (endIndex >= len || startIndex > endIndex) {
+char* jetStrSub(char *str,size_t len, size_t startIndex, size_t endIndex) {
+    if (endIndex >= len) {
         return NULL;
     }
-    char *newStr = (char *)malloc((endIndex-startIndex + 1) * sizeof(char));
-    size_t j = 0;
-    for (size_t i =startIndex;i<=endIndex;i++){
-        newStr[j++]=str[i];
+    size_t from = startIndex<endIndex?startIndex:endIndex;
+    size_t to = startIndex<endIndex?endIndex:startIndex;
+    char *newStr = (char *)malloc((to-from + 1) * sizeof(char));
+    for (size_t i =0;i<to-from;i++){
+        newStr[i]=str[i+from];
     }
-    newStr[endIndex-startIndex] = '\0';
+    newStr[to-from] = '\0';
     return newStr;
 }
 #endif
