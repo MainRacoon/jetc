@@ -35,6 +35,9 @@ char* jetStrStart(char* str,size_t len, char ch) {
     buf[len+1]=0;
     return buf;
 }
+char*jetStrStartA(char*str,char ch){
+    return jetStrStart(str, strlen(str),ch);
+}
 char* jetStrCat(char* str1,size_t len1, char* str2,size_t len2) {
     if (str1 == NULL||str2==NULL) {
         return NULL;
@@ -50,13 +53,19 @@ char* jetStrCat(char* str1,size_t len1, char* str2,size_t len2) {
     }
     return buf;
 }
-bool jetStrCharIs(char*pat, char c){
-    for (size_t i = 0; i < strlen(pat); ++i) {
+char* jetStrCatA(char* str1,char* str2){
+    return jetStrCat(str1, strlen(str1),str2, strlen(str2));
+}
+bool jetStrCharIs(char*pat,size_t len, char c){
+    for (size_t i = 0; i < len; ++i) {
         if(pat[i]==c){
             return true;
         }
     }
     return false;
+}
+bool jetStrCharIsA(char*pat, char c){
+    return jetStrCharIs(pat, strlen(pat),c);
 }
 char* jetStrEnd(char* str,size_t len, char ch) {
     if(str==NULL){
@@ -70,6 +79,9 @@ char* jetStrEnd(char* str,size_t len, char ch) {
     buf[len+1]=0;
     return buf;
 }
+char* jetStrEndA(char* str, char ch){
+    return jetStrEnd(str, strlen(str),ch);
+}
 char* jetStrSub(char *str,size_t len, size_t startIndex, size_t endIndex) {
     if (endIndex >= len) {
         return NULL;
@@ -82,5 +94,8 @@ char* jetStrSub(char *str,size_t len, size_t startIndex, size_t endIndex) {
     }
     newStr[to-from] = '\0';
     return newStr;
+}
+char* jetStrSubA(char *str,size_t startIndex, size_t endIndex){
+    return jetStrSub(str, strlen(str),startIndex,endIndex);
 }
 #endif

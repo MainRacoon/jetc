@@ -12,6 +12,9 @@ typedef struct{
 jetelement jetElement(void* value,long long int size){
     return (jetelement){value,size};
 }
+jetelement jetElementNS(void*v){
+    return jetElement(v,0);
+}
 #else
 typedef jetelement jetelement;
 #endif

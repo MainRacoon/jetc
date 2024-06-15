@@ -25,5 +25,11 @@ char*jetFileReadAll(char*filename,size_t *size){
     fclose(f);
     return buf;
 }
-
+FILE*jetFileOverOpen(char*filename,char*mode){
+    FILE *f= fopen(filename,"w");
+    fprintf(f,"");
+    fclose(f);
+    f = fopen(filename, mode);
+    return f;
+}
 #endif
