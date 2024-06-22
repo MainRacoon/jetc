@@ -9,4 +9,6 @@ typedef             int i32;
 typedef unsigned    int u32;
 typedef             long long i64;
 typedef unsigned    long long u64;
+#define MAX(x,y) x>y?x:y
+#define MIN(x,y) x>y?y:x
 #endif
