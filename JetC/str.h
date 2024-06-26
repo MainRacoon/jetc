@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-char* jetStrf(const char* format, ...) {
+char* jet_Strf(const char* format, ...) {
     va_list args;
     va_list args_copy;
     int needed;
@@ -23,7 +23,7 @@ char* jetStrf(const char* format, ...) {
     va_end(args_copy);
     return buffer;
 }
-char* jetStrStart(char* str,size_t len, char ch) {
+char* jet_StrStart(char* str,size_t len, char ch) {
     if(str==NULL){
         return NULL;
     }
@@ -35,10 +35,10 @@ char* jetStrStart(char* str,size_t len, char ch) {
     buf[len+1]=0;
     return buf;
 }
-char*jetStrStartA(char*str,char ch){
-    return jetStrStart(str, strlen(str),ch);
+char*jet_StrStartA(char*str,char ch){
+    return jet_StrStart(str, strlen(str),ch);
 }
-char* jetStrCat(char* str1,size_t len1, char* str2,size_t len2) {
+char* jet_StrCat(char* str1,size_t len1, char* str2,size_t len2) {
     if (str1 == NULL||str2==NULL) {
         return NULL;
     }
@@ -53,10 +53,10 @@ char* jetStrCat(char* str1,size_t len1, char* str2,size_t len2) {
     }
     return buf;
 }
-char* jetStrCatA(char* str1,char* str2){
-    return jetStrCat(str1, strlen(str1),str2, strlen(str2));
+char* jet_StrCatA(char* str1,char* str2){
+    return jet_StrCat(str1, strlen(str1),str2, strlen(str2));
 }
-bool jetStrCharIs(char*pat,size_t len, char c){
+bool jet_StrCharIs(char*pat,size_t len, char c){
     for (size_t i = 0; i < len; ++i) {
         if(pat[i]==c){
             return true;
@@ -64,10 +64,10 @@ bool jetStrCharIs(char*pat,size_t len, char c){
     }
     return false;
 }
-bool jetStrCharIsA(char*pat, char c){
-    return jetStrCharIs(pat, strlen(pat),c);
+bool jet_StrCharIsA(char*pat, char c){
+    return jet_StrCharIs(pat, strlen(pat),c);
 }
-char* jetStrEnd(char* str,size_t len, char ch) {
+char* jet_StrEnd(char* str,size_t len, char ch) {
     if(str==NULL){
         return NULL;
     }
@@ -79,10 +79,10 @@ char* jetStrEnd(char* str,size_t len, char ch) {
     buf[len+1]=0;
     return buf;
 }
-char* jetStrEndA(char* str, char ch){
-    return jetStrEnd(str, strlen(str),ch);
+char* jet_StrEndA(char* str, char ch){
+    return jet_StrEnd(str, strlen(str),ch);
 }
-char* jetStrSub(char *str,size_t len, size_t startIndex, size_t endIndex) {
+char* jet_StrSub(char *str,size_t len, size_t startIndex, size_t endIndex) {
     if (endIndex >= len) {
         return NULL;
     }
@@ -95,7 +95,7 @@ char* jetStrSub(char *str,size_t len, size_t startIndex, size_t endIndex) {
     newStr[to-from] = '\0';
     return newStr;
 }
-char* jetStrSubA(char *str,size_t startIndex, size_t endIndex){
-    return jetStrSub(str, strlen(str),startIndex,endIndex);
+char* jet_StrSubA(char *str,size_t startIndex, size_t endIndex){
+    return jet_StrSub(str, strlen(str),startIndex,endIndex);
 }
 #endif

@@ -7,12 +7,12 @@
 
 
 
-bool jetFileExists(char*filename){
+bool jet_FileExists(char*filename){
     FILE *f=fopen(filename,"r");
     bool out = f!=NULL;
     return out;
 }
-char*jetFileReadAll(char*filename,size_t *size){
+char*jet_FileReadAll(char*filename,size_t *size){
     FILE*f=fopen(filename,"rb");
     if(f==NULL){
         return NULL;
@@ -25,7 +25,7 @@ char*jetFileReadAll(char*filename,size_t *size){
     fclose(f);
     return buf;
 }
-FILE*jetFileOverOpen(char*filename,char*mode){
+FILE*jet_FileOverOpen(char*filename,char*mode){
     FILE *f= fopen(filename,"w");
     fprintf(f,"");
     fclose(f);

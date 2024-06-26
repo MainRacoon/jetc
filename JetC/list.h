@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define list_u64 unsigned long long
-#ifdef JETLIST_VPS_USE
+#ifndef JETLIST_VPS_NO
 typedef struct{
     void*value;
     list_u64 size;
@@ -26,36 +26,49 @@ typedef struct{
     list_u64 len;
     list_u64 count;
 }jetlist;
-#define jetListSizeof(x) sizeof(jetelement)*(x)
-jetlist jetList(){
+#define jet_ListSizeof(x) sizeof(jetelement)*(x)
+jetlist jet_List(){
     return (jetlist){0,0,0};
 }
 
-void jetListResize(jetlist*list, list_u64 count){
-    if(list->len>list->count-count){
-        list->len=count;
+void jet_ListResize(jetlist*list, list_u64 elements){
+    if(list->len>list->count-elements){
+        list->len=elements;
     }
-    list->count= count;
-    list->array=(jetelement*) realloc(list->array, jetListSizeof(list->count));
+    list->count= elements;
+    list->array=(jetelement*) realloc(list->array, jet_ListSizeof(list->count));
     
 }
-jetlist jetListArray(jetelement*elements, list_u64 count){
-    jetlist list = jetList();
-    jetListResize(&list,count);
+jetlist jet_ListArray(jetelement*elements, list_u64 count){
+    jetlist list = jet_List();
+    jet_ListResize(&list,count);
     list.len=count;
     for (list_u64 i = 0; i < count; ++i) {
         list.array[i]=elements[i];
     }
     return list;
 }
-
-void jetListAppend(jetlist *list,jetelement element){
+jetelement jet_ListRandom(jetlist list){
+    return list.array[jet_Random64(0,list.len-1)];
+}
+jetlist jet_ListCopy(jetlist list){
+    jetlist copy = jet_List();
+    jet_ListResize(&copy,list.count);
+    copy.len=list.len;
+    for (list_u64 i = 0; i < list.len; ++i) {
+        jetelement el = (jetelement) malloc(sizeof(jetelement ));
+        memcpy(el, list.array[i], sizeof(jetelement));
+        copy.array[i]=el;
+    }
+    return copy;
+}
+void jet_ListAppend(jetlist *list,jetelement element){
     list->array[list->len]=element;
     list->len++;
 }
-void jetListAdd(jetlist *list,jetelement element,list_u64 index){
+void jet_ListAdd(jetlist *list,jetelement element,list_u64 index){
     if(index>=list->len){
-        jetListAppend(list,element);
+        jet_ListAppend(list,element);
         return;
     }
     for(list_u64 i=list->len;i>index;i++){
@@ -64,19 +77,27 @@ void jetListAdd(jetlist *list,jetelement element,list_u64 index){
     list->array[index]=element;
     list->len++;
 }
-jetlist jetListMerge(jetlist list1, jetlist list2){
-    jetlist list = jetList();
-    list.len=list1.len+list2.len;
-    jetListResize(&list,list1.len+list2.len);
-    for(list_u64 i = 0; i<list1.len;i++){
-        list.array[i]=list1.array[i];
+jetlist jet_ListMerge(list_u64 count, ...){
+    va_list ap;
+    jetlist buf = jet_List();
+
+    va_start(ap, count);
+    for(list_u64 i = 0; i < count; i++) {
+        jetlist b = jet_ListCopy(va_arg(ap, jetlist));
+        jet_ListResize(&buf, buf.count+b.len);
+        list_u64 j = 0;
+        while (buf.len!=buf.count){
+
+            buf.array[buf.len]=b.array[j];
+            buf.len++;
+            j++;
+        }
     }
-    for(list_u64 i = 0; i<list2.len;i++){
-        list.array[i+list1.len]=list2.array[i];
-    }
-    return list;
+    va_end(ap);
+
+    return buf;
 }
-int jetListRemove(jetlist *list,list_u64 index){
+int jet_ListRemove(jetlist *list,list_u64 index){
     if(index>=list->len){
         return 1;
     }
@@ -86,9 +107,9 @@ int jetListRemove(jetlist *list,list_u64 index){
     list->len--;
     return 0;
 }
-jetlist jetListSlice(jetlist list, list_u64 from, list_u64 to){
+jetlist jet_ListSlice(jetlist list, list_u64 from, list_u64 to){
     if(from>list.len||to>list.len){
-        return jetList();
+        return jet_List();
     }
     list_u64 end,start;
     if(from>to){
@@ -98,14 +119,14 @@ jetlist jetListSlice(jetlist list, list_u64 from, list_u64 to){
         end=to;
         start=from;
     }
-    jetlist buf = jetList();
+    jetlist buf = jet_List();
     buf.len=end-start+1;
-    jetListResize(&buf,buf.len);
+    jet_ListResize(&buf,buf.len);
     for (list_u64 i = start; i <= end; ++i) {
         buf.array[i-start]=list.array[i];
     }
     return buf;
 }
 #undef list_u64
-#undef jetListSizeof
+#undef jet_ListSizeof
 #endif
