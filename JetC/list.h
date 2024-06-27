@@ -2,8 +2,9 @@
 #define JETC_LIST_H
 #include <stdio.h>
 #include <stdlib.h>
+
 #define list_u64 unsigned long long
-#ifndef JETLIST_VPS_NO
+#ifndef JETC_LIST_VOIDP
 typedef struct{
     void*value;
     list_u64 size;
@@ -48,20 +49,24 @@ jetlist jet_ListArray(jetelement*elements, list_u64 count){
     }
     return list;
 }
+#ifdef JETC_UTL_H
 jetelement jet_ListRandom(jetlist list){
     return list.array[jet_Random64(0,list.len-1)];
 }
+#endif
+#ifndef JETC_LIST_VOIDP
 jetlist jet_ListCopy(jetlist list){
     jetlist copy = jet_List();
     jet_ListResize(&copy,list.count);
     copy.len=list.len;
     for (list_u64 i = 0; i < list.len; ++i) {
-        jetelement el = (jetelement) malloc(sizeof(jetelement ));
-        memcpy(el, list.array[i], sizeof(jetelement));
+        jetelement el = jetElement((void*)malloc(list.array[i].size),list.array[i].size);
+        memcpy(el.value, list.array[i].value, sizeof(jetelement));
         copy.array[i]=el;
     }
     return copy;
 }
+#endif
 void jet_ListAppend(jetlist *list,jetelement element){
     list->array[list->len]=element;
     list->len++;

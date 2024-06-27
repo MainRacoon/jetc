@@ -63,16 +63,18 @@ void jet_CLS(){
     fflush(stdout);
 #endif
 }
-int jet_Random32(int x, int y){
-    return rand() % (y - x + 1) + x;
+int jet_Random32(){
+    return rand();
 }
-unsigned long long int jet_Random64(unsigned long long int x, unsigned long long int y) {
+unsigned long long int jet_Random64() {
     unsigned long long int r = 0;
     for (int i=0; i<64; i++) {
         r = r*2 + rand()%2;
     }
-    return r % (y - x + 1) + x;
+    return r;
 }
 #define jetscmp(x,y) strcmp(x,y)==0
+#define jet_SizeOfStr(len) sizeof(char*)*len
+#define jet_NumBetween(num,x,y) num% (y - x + 1) + x
 #endif
 
