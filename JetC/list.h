@@ -2,6 +2,8 @@
 #define JETC_LIST_H
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
 
 #define list_u64 unsigned long long
 #ifndef JETC_LIST_VOIDP
@@ -49,11 +51,13 @@ jetlist jet_ListArray(jetelement*elements, list_u64 count){
     }
     return list;
 }
-#ifdef JETC_UTL_H
 jetelement jet_ListRandom(jetlist list){
-    return list.array[jet_Random64(0,list.len-1)];
+    unsigned long long int r = 0;
+    for (int i=0; i<64; i++) {
+        r = r*2 + rand()%2;
+    }
+    return list.array[r% list.len];
 }
-#endif
 #ifndef JETC_LIST_VOIDP
 jetlist jet_ListCopy(jetlist list){
     jetlist copy = jet_List();
